@@ -28,6 +28,9 @@
 //What length is the desired EPC array?
 #define EPC_LENGTH    100
 
+//How much to flash white during time a disconnect?
+#define FLASHAMOUNT   10
+
 // When we setup the NeoPixel library, we tell it how many pixels, and which pin to use to send signals.
 // Note that for older NeoPixel strips you might need to change the third parameter--see the strandtest
 // example for more information on possible values.
@@ -59,9 +62,19 @@ void setup() {
   {
     Serial.println("Module failed to respond. Please check wiring to RFID shield");
 
-    pixel.setPixelColor(0, 50, 50, 50); // Moderately bright white color.
-    pixel.show(); // This sends the updated pixel color to the hardware.
-    
+    for(int i = 0; i < FLASHAMOUNT; i++){
+       pixel.setPixelColor(0, 0, 0, 0); // No color
+       pixel.show(); // This sends the updated pixel color to the hardware.
+
+       delay(150);
+
+       pixel.setPixelColor(0, 50, 50, 50); // Moderately bright white color.
+       pixel.show(); // This sends the updated pixel color to the hardware.
+
+       delay(150);
+
+    }
+     
     while(1); //stop everything
   }
   
