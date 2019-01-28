@@ -136,7 +136,7 @@ void loop()
 
       Serial.println("");
       Serial.println("RSSI: ");
-      Serial.println(rssi, HEX);
+      Serial.println(rssi, DEC);
       Serial.println(" ");
       Serial.println(" ");
       
@@ -152,7 +152,7 @@ void loop()
       }
       else
       {
-      pixel.setPixelColor(50, 0, 0, 0); //Moderately bright blue color.
+      pixel.setPixelColor(0, 0, 0, 50); //Moderately bright blue color.
       pixel.show(); //This sends the updated pixel color to the hardware.
       }
     }
