@@ -22,8 +22,11 @@
 // How many NeoPixels are attached to the Arduino?
 #define NUMPIXELS      1
 
-//What is the Threshold for wet and dry?
-#define THRESHOLD     19
+//What is the Threshold for dry?
+#define THRESHOLD_DRY     19
+
+//What is the Threshold for wet?
+#define THRESHOLD_MEDIUM     10
 
 //What length is the desired EPC array?
 #define EPC_LENGTH    100
@@ -98,8 +101,10 @@ void loop()
   byte epc[12];
   byte epclength = 12;
 
-  epcStartIndex = nano.getTagDataBytes() + 31;
-  epcEndIndex = epcStartIndex + 12;
+  byte rssi;
+
+ // epcStartIndex = nano.getTagDataBytes() + 31;
+ // epcEndIndex = epcStartIndex + 12;
 
   //Read sensor value
   mySensorValLength = sizeof(mySensorVal); //length of sensor value may change each time .readTagSensorXXX is called
@@ -112,9 +117,9 @@ void loop()
     Serial.println("sensor value: ");
     for (byte a = 1 ; a < 2 ; a++) 
     {
-  //    byte epc[EPC_LENGTH];
-  //    for(int i = 0; i < EPC_LENGTH; i++){
-  //       epc[i] = nano.readMsgEPC(i);
+   //   byte epc[EPC_LENGTH];
+     // for(int i = 0; i < EPC_LENGTH; i++){
+         rssi = nano.getTagRSSI();
   //    }
       Serial.println(mySensorVal[a], DEC);   //sensor value is read as decimal
       
@@ -129,18 +134,26 @@ void loop()
         }
       }
 
+      Serial.println("");
+      Serial.println("RSSI: ");
+      Serial.println(rssi, HEX);
       Serial.println(" ");
       Serial.println(" ");
       
-      if(mySensorVal[a] > THRESHOLD) 
+      if(mySensorVal[a] > THRESHOLD_DRY) 
       {
       pixel.setPixelColor(0, 50, 0, 0); // Moderately bright red color.
       pixel.show(); // This sends the updated pixel color to the hardware.
       }
-      else 
+      else if(mySensorVal[a] > THRESHOLD_MEDIUM)
       {
       pixel.setPixelColor(0, 0, 50, 0); // Moderately bright green color.
       pixel.show(); // This sends the updated pixel color to the hardware.  
+      }
+      else
+      {
+      pixel.setPixelColor(50, 0, 0, 0); //Moderately bright blue color.
+      pixel.show(); //This sends the updated pixel color to the hardware.
       }
     }
   }
