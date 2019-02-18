@@ -2,7 +2,8 @@
  * Using NeoPixel to illuminate different colors depending on the value that the SmarTrac reads.
  * BLUE = wet
  * RED = dry
- * WHITE = no response from RFID Reader
+ * FLASHING WHITE = no response from RFID Reader
+ * WHITE = searching for tag
  * 
  * Hardware setup process:
  * Use jumper wires to connect the NeoPixel's Vcc, GND, and DIN pins
@@ -23,10 +24,10 @@
 #define NUMPIXELS      1
 
 //What is the Threshold for dry?
-#define THRESHOLD_DRY     19
+#define THRESHOLD_DRY     15
 
 //What is the Threshold for wet?
-#define THRESHOLD_MEDIUM     10
+#define THRESHOLD_MEDIUM     9
 
 //What length is the desired EPC array?
 #define EPC_LENGTH    100
@@ -82,7 +83,7 @@ void setup() {
   }
   
   nano.setRegion(REGION_NORTHAMERICA); //Set to North America
-  nano.setReadPower(1500); //15.00 dBm. Higher values may cause USB port to brown out
+  nano.setReadPower(2000); //15.00 dBm. Higher values may cause USB port to brown out
   //Max Read TX Power is 27.00 dBm and may cause temperature-limit throttling
 
 }
@@ -98,18 +99,18 @@ void loop()
   uint8_t epcStartIndex;
   uint8_t epcEndIndex;
 
-  byte epc[12];
-  byte epclength = 12;
+//  byte epc[12];
+//  byte epclength = 12;
 
-  byte rssi;
+//  byte rssi;
 
  // epcStartIndex = nano.getTagDataBytes() + 31;
  // epcEndIndex = epcStartIndex + 12;
 
   //Read sensor value
   mySensorValLength = sizeof(mySensorVal); //length of sensor value may change each time .readTagSensorXXX is called
-  responseTypeSensor = nano.readTagSensor402(mySensorVal, mySensorValLength, 200); //Scan for a new tag up to 1000ms
-  responseTypeSensorEPC = nano.readTagEPC(epc, epclength, 200);
+  responseTypeSensor = nano.readTagSensor402(mySensorVal, mySensorValLength, 500); //Scan for a new tag up to 1000ms
+ // responseTypeSensorEPC = nano.readTagEPC(epc, epclength, 200);
   
   if(responseTypeSensor == RESPONSE_SUCCESS)
   {
@@ -119,10 +120,11 @@ void loop()
     {
    //   byte epc[EPC_LENGTH];
      // for(int i = 0; i < EPC_LENGTH; i++){
-         rssi = nano.getTagRSSI();
+ //        rssi = nano.getTagRSSI();
   //    }
       Serial.println(mySensorVal[a], DEC);   //sensor value is read as decimal
-      
+
+      /*
       if(responseTypeSensorEPC == RESPONSE_SUCCESS)
       {
         Serial.println("EPC value:");
@@ -139,27 +141,28 @@ void loop()
       Serial.println(rssi, DEC);
       Serial.println(" ");
       Serial.println(" ");
+      */
       
-      if(mySensorVal[a] > THRESHOLD_DRY) 
+      if(mySensorVal[a] >= THRESHOLD_DRY) 
       {
-      pixel.setPixelColor(0, 50, 0, 0); // Moderately bright red color.
+      pixel.setPixelColor(0, 150, 0, 0); // Moderately bright red color.
       pixel.show(); // This sends the updated pixel color to the hardware.
       }
-      else if(mySensorVal[a] > THRESHOLD_MEDIUM)
+      else if(mySensorVal[a] >= THRESHOLD_MEDIUM)
       {
-      pixel.setPixelColor(0, 0, 50, 0); // Moderately bright green color.
+      pixel.setPixelColor(0, 0, 150, 0); // Moderately bright green color.
       pixel.show(); // This sends the updated pixel color to the hardware.  
       }
       else
       {
-      pixel.setPixelColor(0, 0, 0, 50); //Moderately bright blue color.
+      pixel.setPixelColor(0, 0, 0, 150); //Moderately bright blue color.
       pixel.show(); //This sends the updated pixel color to the hardware.
       }
     }
   }
   else
   {
-    pixel.setPixelColor(0, 50, 50, 50);
+    pixel.setPixelColor(0, 150, 150, 150);
     pixel.show(); 
     Serial.println(F("Searching for tag")); 
   }
