@@ -56,10 +56,14 @@ void setup()
 
   pinMode(5, OUTPUT);   // Enable control of 3.3V rail 
   pinMode(6, OUTPUT);   // Enable control of 5V rail 
+  pinMode(13, OUTPUT); //sd card on hypnos
 
+  
   digitalWrite(5, LOW);  // Enable 3.3V rail
   digitalWrite(6, HIGH);  // Enable 5V rail
-  
+  digitalWrite(13, LOW);  //Sd card 
+
+ 
   Loom.begin_serial(true);
   Loom.parse_config(json_config);
   Loom.print_config();
