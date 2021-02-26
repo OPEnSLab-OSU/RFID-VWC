@@ -1,0 +1,22 @@
+"{\
+	'general':\
+	{\
+		'name':'Device',\
+		'instance':1,\
+		'interval':2000\
+	},\
+	'components':[\
+		{\
+			'name':'Multiplexer',\
+			'params':'default'\
+		},\
+    {\
+      'name':'SD',\
+      'params':[true, 1000, 13, 'test', true]\
+    },\
+    {\
+      'name':'DS3231',\
+      'params':'default'\
+    }\
+	]\
+}"
